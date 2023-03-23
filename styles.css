@@ -16,6 +16,29 @@ body {
         height: 650px;
 }
 
+.admission-page {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('lecture-hall.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 650px;
+}
+
+.admission-hero {
+        background-color: rgb(107, 2, 2);
+        margin-top: 30px;
+        margin: 20px;
+        margin-left: 80px;
+        padding: 10px;
+        width: 600px;
+        color: white;
+        font-size: 18px;
+}
+
+.admission-hero h1 {
+        font-size: 40px;
+}
+
 nav {
         display: flex;
         justify-content: space-between;
@@ -260,4 +283,10 @@ footer {
         color: #fff;
         text-align: center;
         padding: 20px;
+}
+
+.apply-form {
+        /* margin: 200px; */
+        /* padding: 200px; */
+        /* color: red; */
 }
