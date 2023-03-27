@@ -71,7 +71,7 @@
       <nav style="">
           <a href="index.html"><img src="logo-nobg.png" alt="My University Logo"></a>
           <ul>
-                  <li><a href="index.html">Home</a></li>
+                  <li><a href="home.html">Home</a></li>
                   <li><a href="about.html">About</a></li>
                   <li><a href="#">Admissions</a></li>
                   <li><a href="#">Academics</a></li>
@@ -79,8 +79,8 @@
                   <li><a href="#">Alumni</a></li>
           </ul>
           <ul>
-                  <li><a href="login">Login</a></li>
-                  <li><a href="apply.html">SignUp</a></li>
+                  <li><a href="login.php">Login</a></li>
+                  <li><a href="apply.php">SignUp</a></li>
           </ul>
       </nav>
 
@@ -89,15 +89,22 @@
         <?php
           require('db.php');
           if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $firstname = test_input($_POST["firstname"]);
-            $lastname = test_input($_POST["lastname"]);
-            $email = test_input($_POST["email"]);
-            $password = test_input($_POST["password"]);
-            $confirm_password = test_input($_POST["confirm_password"]);
-            $state_of_origin = test_input($_POST["state_of_origin"]);
+            $firstname = stripslashes($_POST["firstname"]);
+            $firstname = mysqli_real_escape_string($connection, $firstname);
+            $lastname = stripslashes($_POST["lastname"]);
+            $lastname = mysqli_real_escape_string($connection, $lastname);
+            $email = stripslashes($_REQUEST['email']);
+            $email = mysqli_real_escape_string($connection, $email);
+            $password = stripslashes($_POST["password"]);
+            $password = mysqli_real_escape_string($connection, $password);
+            $confirm_password = stripslashes($_POST["confirm_password"]);
+            $confirm_password = mysqli_real_escape_string($connection, $confirm_password);
+            $state_of_origin = stripslashes($_POST["state_of_origin"]);
+            $state_of_origin = mysqli_real_escape_string($connection, $state_of_origin);
             $dob = $_POST["dob"];
+            // $dob = date($dob);
 
-            $query = "INSERT INTO 'students' (firstname, lastname, email, password, state_of_origin, dob)
+            $query = "INSERT INTO `students` (firstname, lastname, email, password, state_of_origin, dob)
                     VALUES ('$firstname', '$lastname', '$email', '" . md5($password) ."',
                     '$state_of_origin', '$dob')";
             
@@ -113,15 +120,9 @@
             } else {
               echo "<div class='form'>
                   <h3>Required fields are missing.</h3><br/>
-                  <p class='link'>Click here to <a href='registration.php'>registration</a> again.</p>
+                  <p class='link'>Click here to <a href='apply.php'>register</a> again.</p>
                   </div>";
             }
-          function test_input($data) {
-            $data = trim($data);
-            $data = stripslashes($data);
-            $data = htmlspecialchars($data);
-            return $data;
-          }
           } else {
         ?>
         <form method="post" class="apply" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
