@@ -13,14 +13,18 @@
         <style>
 
         .apply-form {
-          margin: 200px;
+          margin: 70px;
+          margin-left: 250px;
+          margin-right: 250px;
+          padding: 30px;
           text-align: center;
-          color: white;
+          color: black;
           font-weight: 500;
+          background-color: #e5d9f2;
+          border-radius: 10px;
         }
 
         .apply {
-          color: white;
           font-size: 20px;
           /* display: flex; */
           line-height: 50px;
@@ -29,20 +33,19 @@
         .row {
           display: flex;
           flex-direction: row;
-          justify-content: space-around;
+          justify-content: space-between;
         }
 
         input {
           height: 30px;
-          background-color: transparent;
           box-sizing: border-box;
           border: none;
-          border-bottom: 2px solid white;
-          color: white;
+          border: 2px solid black;
+          border-radius: 4px;
         }
 
         input[type=email] {
-          width: 75%;
+          /* width: 100%; */
         }
 
         input:focus {
@@ -55,14 +58,20 @@
           background-color: black;
           border: none;
           color: white;
-          padding: 16px 32px;
+          padding: 10px 30px;
           text-decoration: none;
           margin: 4px 2px;
+          margin-top: 20px;
           cursor: pointer;
           font-size: 20px;
+          border-radius: 4px;
         }
         button:hover {
           opacity: 0.2;
+        }
+
+        .select1 {
+          height: 30px;
         }
         </style>
   </head>
@@ -95,18 +104,23 @@
             $lastname = mysqli_real_escape_string($connection, $lastname);
             $email = stripslashes($_REQUEST['email']);
             $email = mysqli_real_escape_string($connection, $email);
-            $password = stripslashes($_POST["password"]);
+            $password = stripslashes($_POST['password']);
             $password = mysqli_real_escape_string($connection, $password);
             $confirm_password = stripslashes($_POST["confirm_password"]);
             $confirm_password = mysqli_real_escape_string($connection, $confirm_password);
             $state_of_origin = stripslashes($_POST["state_of_origin"]);
+            $gender = stripslashes($_POST["gender"]);
+            $gender = mysqli_real_escape_string($connection, $gender);
             $state_of_origin = mysqli_real_escape_string($connection, $state_of_origin);
             $dob = $_POST["dob"];
             // $dob = date($dob);
 
-            $query = "INSERT INTO `students` (firstname, lastname, email, password, state_of_origin, dob)
-                    VALUES ('$firstname', '$lastname', '$email', '" . md5($password) ."',
-                    '$state_of_origin', '$dob')";
+            // hash password
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+            $query = "INSERT INTO `students` (firstname, lastname, email, password, state_of_origin, dob, gender)
+                    VALUES ('$firstname', '$lastname', '$email', '$hashed_password',
+                    '$state_of_origin', '$dob', '$gender')";
             
             // Do something with form data (e.g. add to database, send message, etc.)
             $result = mysqli_query($connection, $query);
@@ -127,39 +141,52 @@
         ?>
         <form method="post" class="apply" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
           <div class="row">
-            <div class="column">
+            <div class="column1">
               <label for="firstname">First Name</label>
               <input type="text" name="firstname" id="firstname" required>
             </div>
-            <div class="column">
+            <div class="column1">
               <label for="lastname">Last Name</label>
               <input type="text" name="lastname" id="lastname" required>
             </div>
           </div>
-          <div>
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email" required>
+          <div class="row">
+            <div class="column1">
+              <label for="email">Email</label>
+              <input type="email" name="email" id="email" required>
+            </div>
+            <div class="select1">
+              <label for="gender">Gender</label>
+              <select name="gender" id="gender" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="RatherNotSay">Rather not say</option>
+              </select>
+            </div>
           </div>
           <div class="row">
-            <div class="column">
+            <div class="column1">
               <label for="password">Password</label>
               <input type="password" name="password" id="password" required>
             </div>
-            <div class="column">
+            <div class="column1">
               <label for="confirm_password">Confirm Password</label>
               <input type="password" name="confirm_password" id="confirm_password" required>
             </div>
-            <div class="column">
+          </div>
+          <div class="row">
+            <div class="column1">
               <label for="state_of_origin">State Of Origin</label>
               <input type="text" name="state_of_origin" id="state_of_origin" required>
             </div>
-            <div class="column">
+            <div class="column1">
               <label for="dob">Date of Birth</label>
               <input type="date" name="dob" id="dob" required>
             </div>
           </div>
-          <button type="submit">Submit</button>
+            <button type="submit">Submit</button>
           </div>
+          </div>  
         </form>
         <?php
           }
@@ -167,7 +194,14 @@
       </div>
     </div>
     <footer>
-      <p>&copy; 2023 Our University. All rights reserved.</p>
-    </footer>
+                <div style="display: flex; flex-direction: row; justify-content: center;">
+                <img src="logo-nobg.png" style="width: 70px; height: 70px;" alt="uni-logo"/>
+                <p>
+                XYZ University
+                </p>
+                </div> 
+                <p>&copy; 2023</p>
+                All rights reserved.
+        </footer>
   </body>
 </html>

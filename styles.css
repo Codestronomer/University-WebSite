@@ -179,6 +179,10 @@ nav a:hover {
         margin-left: 20px;
 }
 
+.contact {
+        margin: 40px;
+}
+
 /* News section styles */
 .news-section {
         margin-top: -40px;
@@ -289,4 +293,10 @@ footer {
         /* margin: 200px; */
         /* padding: 200px; */
         /* color: red; */
+}
+
+.column {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
 }

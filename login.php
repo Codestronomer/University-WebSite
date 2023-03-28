@@ -1,3 +1,40 @@
+<?php
+        // initialize session
+        session_start();
+        require('db.php');
+
+        // When a form is submitted, check and create user session
+        if (isset($_POST['email'], $_POST['password'])) {
+
+                // Get form data
+                $email = mysqli_real_escape_string($connection, $_POST['email']);
+                $password = mysqli_real_escape_string($connection, $_POST['password']);
+
+                // Find user in database
+                $sql = "SELECT * FROM students WHERE email='$email'";
+                $result = mysqli_query($connection, $sql) or die(mysqli_error($connection));
+                $user = $result->fetch_assoc();
+                $hashedPassword = $user['password'];
+
+                // Verify password
+                if (password_verify($password, $hashedPassword)) {
+                        // Set session variables
+                        $_SESSION['user_id'] = $user['id'];
+                        $_SESSION['email'] = $user['email'];
+                        
+                        // Redirect to user profile page
+                        header("Location: user.php");
+                        exit();
+                } else {
+                                echo "Password is invalid";
+                                echo "<div class='form'>
+                                        <h3>Incorrect Email or Password.</h3>
+                                        <p class='link'>Click here to <a href='login.php'>Retry</a>.</p>
+                                </div>";
+                        }
+        } 
+?>
+        <!-- else { -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,15 +52,15 @@
                         margin: 50px auto;
                         width: 300px;
                         padding: 30px 25px;
-                        background: rgb(10, 10, 10);
+                        background: #e5d9f2;
                         border-radius: 5px;
                         z-index: 5;
                         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
                         transition: 0.3s;
-                        color: white;
+                        color: black;
                 }
                 h1.login-title {
-                        color: white;
+                        color: black;
                         margin: 0px auto 25px;
                         font-size: 25px;
                         font-weight: 600;
@@ -38,16 +75,6 @@
                         /* width: calc(100% - 23px); */
                         width: 100%;
                 }
-                .login-button {
-                        color: #fff;
-                        background: #55a1ff;
-                        border: 0;
-                        outline: 0;
-                        width: 100%;
-                        height: 50px;
-                        font-size: 16px;
-                        text-align: center;
-                }
                 .link {
                         color: #666;
                         font-size: 15px;
@@ -55,7 +82,7 @@
                         margin-bottom: 0px;
                 }
                 .link a {
-                        color: white;
+                        color: #a594f9;
                 }
                 h3 {
                         font-weight: normal;
@@ -72,30 +99,29 @@
                         background-color: transparent;
                         box-sizing: border-box;
                         border: none;
-                        border-bottom: 2px solid white;
-                        color: white;
+                        border-bottom: 2px solid black;
+                        color: black;
                         width: 100%;
                         margin-top: 8px;
                         cursor: pointer;
                         outline: none;
                 }
 
-                input[type=email] {
+                input {
                 width: 100%;
                 }
 
                 input:focus {
                 background-color: transparent;
                 box-sizing: border-box;
-                border: none;
-                outline: none;
+                border-bottom: 2px solid black;
                 }
 
                 button {
-                        background-color: white;
+                        background-color: black;
                         border: none;
                         border-radius: 5px;
-                        color: black;
+                        color: white;
                         padding: 10px 27px;
                         text-decoration: none;
                         margin: 10% 0% 0 35%;
@@ -127,51 +153,33 @@
         </nav>
 
         <div class="apply-form">
-        <?php
-                require('db.php');
-                session_start();
-                // When a form is submitted, check and create user session
-                if (isset($_POST['EMAIL'])) {
-                        $email = stripslashes($_REQUEST['email']);
-                        $email = mysqli_real_escape_string($connection, $email);
-                        $password = stripslashes($_REQUEST['password']);
-                        $password = mysqli_real_escape_string($connection, $password);
-
-                        // check if the user exists in the database
-                        $query = "SELECT * from `students` WHERE email='$email'
-                        AND password='". md5($password) . "'";
-                        
-                        // run query
-                        $result = mysqli_query($connection, $query) or die(mysql_error());
-                        $rows = mysqli_num_rows($result);
-                        if ($rows == 1) {
-                                $_SESSION['email'] = $username;
-                                // redirect to user profile page
-                                header("Location: user.php");
-                        } else {
-                                echo "<div class='form'>
-                                <h3> Incorrect Email or Password. </h3></br>
-                                <p class='link'>Click here to <a href='login.php'>Retry</a>.</p>
-                                </div>";
-                        }
-                } else {
-        ?>
-                        <form class="form" method="post" name="login">
-                                <h1 class="login-title">Login</h1>
-                                <div>
-                                        <label for="email">Email</label>
-                                        <input type="email" name="email" id="email" required>
-                                </div>
-                                <div class="column">
-                                        <label for="password">Password</label>
-                                        <input type="password" name="password" id="password" required>
-                                </div>
-                                <button type="submit">Login</button>
-                                <p class="link"><a href="apply.php">Not a Student? Apply Here</a></p>
-                        </form>
-        <?php
-                }
-        ?>
+                <form class="form" method="post" name="login">
+                        <h1 class="login-title">Login</h1>
+                        <div>
+                                <label for="email">Email</label>
+                                <input type="email" name="email" id="email" required>
+                        </div>
+                        <div class="login-password">
+                                <label for="password">Password</label>
+                                <input type="password" name="password" id="password" required>
+                        </div>
+                        <button type="submit">Login</button>
+                        <p class="link"><a href="apply.php">Not a Student? Apply Here</a></p>
+                </form>
         </div>
+<footer>
+        <div style="display: flex; flex-direction: row; justify-content: center;">
+                <img src="logo-nobg.png" style="width: 70px; height: 70px;" alt="uni-logo" />
+                <p>
+                        XYZ University
+                </p>
+        </div>
+        <p>&copy; 2023</p>
+        All rights reserved. | Developed by Group15
+</footer>
 </body>
+
 </html>
+                        <!-- '; -->
+        <!-- } -->
+        <!-- require('bottom.php'); -->
